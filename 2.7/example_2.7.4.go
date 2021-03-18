@@ -41,4 +41,7 @@ func main() {
 		"Area of %v is %v kms squared. Think! %[2]v kms squared! %[1]v Amazing.\n",
 		country, area,
 	)
+
+	// Exsample with Escape sequences
+	fmt.Printf("It's escape \t \" \n \\ sequences exsmples\n")
 }
