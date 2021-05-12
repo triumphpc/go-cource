@@ -4,6 +4,7 @@ type quadcopter struct {
 	transport
 }
 
+// factory method
 func newQuadcopter() iTransport {
 	return &quadcopter{
 		transport: transport{

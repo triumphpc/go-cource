@@ -4,6 +4,7 @@ type electricScooter struct {
 	transport
 }
 
+// factory method
 func newElectricScooter() iTransport {
 	return &electricScooter{
 		transport: transport{
