@@ -82,7 +82,7 @@ func increase(v *uint) uint {
 
 // *int means you *must* pass a *int (pointer to int), NOT just an int!
 func someFunc(x *int) {
-	*x = 5 // Whatever variable caller passed in will now be 2
+	*x = 5 // Whatever variable caller passed in will now be 5
 	y := 9
 	x = &y // has no impact on the caller because we overwrote the pointer value!
 }
