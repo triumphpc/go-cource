@@ -3,8 +3,8 @@ package user
 import "errors"
 
 type User struct {
-	Name       string
-	SecondName string
+	name       string
+	secondName string
 	Age        int
 }
 
@@ -13,16 +13,16 @@ func (u *User) SetName(n string) error {
 	if len(n) < 2 {
 		return errors.New("invalid name")
 	}
-	u.Name = n
+	u.name = n
 	return nil
 }
 
-// Set Second Name for user struct
+// Set Second name for user struct
 func (u *User) SetSecondName(n string) error {
 	if len(n) < 2 {
 		return errors.New("invalid name")
 	}
-	u.SecondName = n
+	u.secondName = n
 	return nil
 }
 
