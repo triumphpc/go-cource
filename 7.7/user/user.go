@@ -5,7 +5,7 @@ import "errors"
 type User struct {
 	name       string
 	secondName string
-	Age        int
+	age        int
 }
 
 // Set name for user struct
@@ -26,11 +26,11 @@ func (u *User) SetSecondName(n string) error {
 	return nil
 }
 
-// Set Age for user struct
+// Set age for user struct
 func (u *User) SetAge(a int) error {
 	if a < 1 || a > 110 {
 		return errors.New("invalid age")
 	}
-	u.Age = a
+	u.age = a
 	return nil
 }

@@ -9,7 +9,7 @@ package main
 
 import (
 	"fmt"
-	"github.com/ver-sus/go-cource/7.7/user"
+	"github.com/triumphpc/go-cource/7.7/user"
 	"log"
 )
 
@@ -31,6 +31,6 @@ func main() {
 
 	fmt.Println(u)
 
-	//u.Age = 30
-	//fmt.Println(u)
+	u.Age = 30
+	fmt.Println(u)
 }
