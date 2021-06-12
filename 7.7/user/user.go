@@ -34,3 +34,16 @@ func (u *User) SetAge(a int) error {
 	u.age = a
 	return nil
 }
+
+// Get methods
+func (u *User) Name() string {
+	return u.name
+}
+
+func (u *User) SecondName() string {
+	return u.secondName
+}
+
+func (u *User) Age() int {
+	return u.age
+}
