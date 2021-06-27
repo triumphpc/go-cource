@@ -29,7 +29,7 @@ func main() {
 	// by point
 	number2 := MyNumber(2)
 	fmt.Println("Original:", number2)
-	number2.SquareByRef()
+	number2.SquareByRef() // 4
 	fmt.Println("After:", number2)
 
 	// with reference
@@ -37,10 +37,11 @@ func main() {
 	pointer.SquareByRef()
 	fmt.Println("After with references:", *pointer) // After with references: 8
 	// or
-	(&number2).SquareByRef()
+	(&number2).SquareByRef() // 16
 
 	// Sum of elements
 	el0 := SomeList{2, nil}
+
 	el := SomeList{1, &el0}
 
 	fmt.Println(el.Sum())

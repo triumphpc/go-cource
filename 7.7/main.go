@@ -31,6 +31,10 @@ func main() {
 
 	fmt.Println(u)
 
-	u.Age = 30
-	fmt.Println(u)
+	//u.Age = 30
+	//fmt.Println(u)
+
+	fmt.Println(u.Name())
+	fmt.Println(u.Age())
+
 }
