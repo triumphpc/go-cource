@@ -1,6 +1,6 @@
 /**
 Go (Golang) From simple to great. The Complete Developer's Guide.
-Example 8.3: Delayed calls, Defer
+Example 8.3: Error handling
 
 @author Alex Versus 2021
 */
@@ -8,95 +8,130 @@ Example 8.3: Delayed calls, Defer
 package main
 
 import (
+	"errors"
 	"fmt"
+	"log"
+	"net/http"
+	"os"
+	"strings"
+	"time"
 )
 
 // Entrypoint
 func main() {
-	defer fmt.Println("Goodbye!")
-	fmt.Println("Hello!")
-	fmt.Println("What?!")
+	//t := time.Date(2021, 1, 1, 1, 1, 1, 1, nil) // error
+	//fmt.Println(t)
 
-	er := errFunc(second())
-	if er != nil {
-		//log.Fatal(er)
+	// Create new error
+	err := errors.New("new error")
+	fmt.Println("Print new error:", err)
+	//
+	// Dynamic error string
+	err = fmt.Errorf("error at: %v", time.Now())
+	fmt.Println("An error handling:", err)
+
+	err = createError()
+	if err != nil {
+		fmt.Println("Again", err)
+		return
+	}
+	//
+	// first strategy example
+	_, err = callFirst("test")
+	if err != nil {
+		fmt.Println("First strategy error", err)
+	}
+	//
+	//// first strategy example
+	//_, err = callSecond("test")
+	//if err != nil {
+	//	fmt.Println("First strategy error", err)
+	//}
+	//
+	// second strategy example
+	//err = callSecondStrategy("test")
+	//if err != nil {
+	//	fmt.Println("Second strategy error", err)
+	//}
+
+	//// third strategy example
+	//err := callThirdStrategy("test")
+	//if err != nil {
+	//	fmt.Fprintf(os.Stderr, "Server error: %v\n", err)
+	//	os.Exit(1)
+	//}
+
+	// forth strategy
+	//err := callThirdStrategy("test")
+	//if err != nil {
+	//	log.Fatalf("Server error %v\n", err)
+	//}
+
+	// fifth strategy
+	err := callThirdStrategy("test")
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Server error: %v\n", err)
 	}
 
-	// third example
-	start()
-
-	// arguments
-	nums := [...]int{0, 1, 2, 3, 4}
-	nums[0] += 1
-	defer fa(nums) // [1 1 2 3 4]
-	nums[0] += 5
-
-	// slice example
-	slice := []int{0, 1, 2, 3, 4}
-	slice[0] += 5
-	defer fs(slice) // [10 1 2 3 4]
-	slice[0] += 5
-
-	// change outer func value
-	fmt.Println(fchange()) // 4
-
-	// discarded value
-	fmt.Println(fdiscarted()) // 1
-
-	// anonymous
-	_ = double(2) // double(2) = 4
+	os.RemoveAll("/tmp_errors") // ignore RemoveAll erros
 
 }
 
-func errFunc(i int) error {
-	defer fmt.Println("one")
-	fmt.Println("two")
-	fmt.Println("five: ", i)
-
-	return fmt.Errorf("error.")
+// Create new error
+func createError() error {
+	return errors.New("error")
 }
 
-func second() int {
-	fmt.Println("four")
-	return 1
+// Example several return values
+func example(n string) (string, error) {
+	if n != "" {
+		return strings.Title(n), nil
+	}
+	return "", errors.New("some error")
 }
 
-func start() {
-	fmt.Println("open")
-	defer closeFunc()
-	fmt.Println("finish")
+// Failure of the calling function
+func callFirst(url string) (string, error) {
+	_, err := http.Get(url)
+	if err != nil {
+		return "", err
+	}
+	return "some answer", nil
 }
 
-func closeFunc() {
-	fmt.Println("close")
+// Failure of the calling function
+func callSecond(url string) (string, error) {
+	_, err := http.Get(url)
+	if err != nil {
+		return "", fmt.Errorf("additional %s info. Error: %v", url, err)
+	}
+	return "some answer", nil
 }
 
-func fa(nums [5]int) {
-	fmt.Printf("%v\n", nums)
+func callSecondStrategy(url string) error {
+	const timeout = 5 * time.Second
+	deadline := time.Now().Add(timeout)
+	for tries := 0; time.Now().Before(deadline); tries++ {
+		_, err := http.Head(url)
+		if err == nil {
+			return nil // success
+		}
+		log.Printf("url %s is not available...%v", url, err)
+		time.Sleep(time.Second << uint(tries)) // Increase
+	}
+	return fmt.Errorf("Server %s is not response; time %s ", url, timeout)
 }
 
-func fs(nums []int) {
-	fmt.Printf("%v\n", nums)
-}
-
-func fchange() (v int) {
-	defer func() {
-		v *= 2
-	}()
-	v = 2
-	return
-}
-
-func fdiscarted() int {
-	defer func() int {
-		return 10
-	}()
-	return 1
-}
-
-func double(x int) (result int) {
-	defer func() {
-		fmt.Printf("double(%d) = %d\n", x, result)
-	}()
-	return x + x
+func callThirdStrategy(url string) error {
+	const timeout = 5 * time.Second
+	deadline := time.Now().Add(timeout)
+	for tries := 0; time.Now().Before(deadline); tries++ {
+		_, err := http.Head(url)
+		if err == nil {
+			return nil // success
+		}
+		log.Printf("url %s is not available...%v", url, err)
+		time.Sleep(time.Second << uint(tries)) // Increase
+	}
+	return errors.New("after 5 second process stopped")
 }

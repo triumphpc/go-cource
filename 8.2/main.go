@@ -1,6 +1,6 @@
 /**
 Go (Golang) From simple to great. The Complete Developer's Guide.
-Example 8.2: Error handling
+Example 8.2: Error file closing
 
 @author Alex Versus 2021
 */
@@ -8,130 +8,67 @@ Example 8.2: Error handling
 package main
 
 import (
-	"errors"
+	"bufio"
 	"fmt"
 	"log"
-	"net/http"
 	"os"
-	"strings"
-	"time"
+	"strconv"
 )
 
 // Entrypoint
 func main() {
-	//t := time.Date(2021, 1, 1, 1, 1, 1, 1, nil) // error
-	//fmt.Println(t)
+	numbers, err := GetFloatsFromFile("file.txt")
 
-	// Create new error
-	//err := errors.New("new error")
-	//fmt.Println("Print new error:", err)
-	//
-	//// Dynamic error string
-	//err = fmt.Errorf("error at: %v", time.Now())
-	//fmt.Println("An error handling:", err)
-	//
-	//err = createError()
-	//if err != nil {
-	//	fmt.Println("Again", err)
-	//	return
-	//}
-	//
-	//// first strategy example
-	//_, err = callFirst("test")
-	//if err != nil {
-	//	fmt.Println("First strategy error", err)
-	//}
-	//
-	//// first strategy example
-	//_, err = callSecond("test")
-	//if err != nil {
-	//	fmt.Println("First strategy error", err)
-	//}
-	//
-	//// second strategy example
-	//err = callSecondStrategy("test")
-	//if err != nil {
-	//	fmt.Println("Second strategy error", err)
-	//}
-
-	// third strategy example
-	//err := callThirdStrategy("test")
-	//if err != nil {
-	//	fmt.Fprintf(os.Stderr, "Server error: %v\n", err)
-	//	os.Exit(1)
-	//}
-
-	// forth strategy
-	//err := callThirdStrategy("test")
-	//if err != nil {
-	//	log.Fatalf("Server error %v\n", err)
-	//}
-
-	// fifth strategy
-	err := callThirdStrategy("test")
 	if err != nil {
-		fmt.Fprintf(os.Stderr, "Server error: %v\n", err)
+		log.Fatal(err)
 	}
 
-	os.RemoveAll("/tmp_errors") // ignore RemoveAll erros
-
-}
-
-// Create new error
-func createError() error {
-	return errors.New("error")
-}
-
-// Example several return values
-func example(n string) (string, error) {
-	if n != "" {
-		return strings.Title(n), nil
+	var sum float64 = 0
+	for _, n := range numbers {
+		sum += n
 	}
-	return "", errors.New("some error")
+	fmt.Printf("Sum: %0.2f\n", sum)
+
 }
 
-// Failure of the calling function
-func callFirst(url string) (string, error) {
-	_, err := http.Get(url)
+// Open file function for writing
+func openFile(fileName string) (*os.File, error) {
+	fmt.Println("Opening", fileName)
+
+	return os.Open(fileName)
+}
+
+// Close file
+func closeFile(file *os.File) {
+	fmt.Println("Closing file")
+
+	file.Close()
+}
+
+// Get content from file
+func GetFloatsFromFile(fileName string) ([]float64, error) {
+	var numbers []float64
+	file, err := openFile(fileName)
+
 	if err != nil {
-		return "", err
+		return nil, err
 	}
-	return "some answer", nil
-}
 
-// Failure of the calling function
-func callSecond(url string) (string, error) {
-	_, err := http.Get(url)
-	if err != nil {
-		return "", fmt.Errorf("additional %s info. Error: %v", url, err)
-	}
-	return "some answer", nil
-}
-
-func callSecondStrategy(url string) error {
-	const timeout = 5 * time.Second
-	deadline := time.Now().Add(timeout)
-	for tries := 0; time.Now().Before(deadline); tries++ {
-		_, err := http.Head(url)
-		if err == nil {
-			return nil // success
+	scanner := bufio.NewScanner(file)
+	for scanner.Scan() {
+		number, err := strconv.ParseFloat(scanner.Text(), 64)
+		if err != nil {
+			return nil, err
 		}
-		log.Printf("url %s is not available...%v", url, err)
-		time.Sleep(time.Second << uint(tries)) // Increase
+		numbers = append(numbers, number)
 	}
-	return fmt.Errorf("Server %s is not response; time %s ", url, timeout)
-}
 
-func callThirdStrategy(url string) error {
-	const timeout = 5 * time.Second
-	deadline := time.Now().Add(timeout)
-	for tries := 0; time.Now().Before(deadline); tries++ {
-		_, err := http.Head(url)
-		if err == nil {
-			return nil // success
-		}
-		log.Printf("url %s is not available...%v", url, err)
-		time.Sleep(time.Second << uint(tries)) // Increase
+	// Closing file
+	closeFile(file)
+
+	if scanner.Err() != nil {
+		return nil, scanner.Err()
 	}
-	return errors.New("after 5 second process stopped")
+
+	return numbers, nil
 }
