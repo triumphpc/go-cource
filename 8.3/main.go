@@ -68,10 +68,10 @@ func main() {
 	//}
 
 	// fifth strategy
-	err := callThirdStrategy("test")
-	if err != nil {
-		fmt.Fprintf(os.Stderr, "Server error: %v\n", err)
-	}
+	//err := callThirdStrategy("test")
+	//if err != nil {
+	//	fmt.Fprintf(os.Stderr, "Server error: %v\n", err)
+	//}
 
 	os.RemoveAll("/tmp_errors") // ignore RemoveAll erros
 
