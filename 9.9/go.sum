@@ -1,0 +1,4 @@
+github.com/triumphpc/moduleexample v1.0.1 h1:XjySs5pve5IS7n3LO0CYgetmh2oszNc8SVQWYp2CuLo=
+github.com/triumphpc/moduleexample v1.0.1/go.mod h1:oEVn6VLRjh5PQ2XY9t4a2+bLNAXg4OiIAzltGbIq0Nw=
+github.com/triumphpc/moduleexample/v2 v2.0.0 h1:lRNRtxj3HLXRMpmCAAH1zJPG+e/DTFSFLVycXLtAVTM=
+github.com/triumphpc/moduleexample/v2 v2.0.0/go.mod h1:pDAsgslgMHZ4ULXbx+dh+83TTN6+h3lp5id1B8DkyJ0=
